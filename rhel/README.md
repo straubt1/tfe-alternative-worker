@@ -2,6 +2,8 @@
 
 > Note: Not officially supported for TFE.
 
+> Note: Pull the base image `registry.access.redhat.com/rhel7` first: <https://access.redhat.com/containers/?tab=images&get-method=red-hat-login#/registry.access.redhat.com/rhel7>
+
 ## How to Use
 
 **Build the Image**
