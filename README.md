@@ -57,9 +57,47 @@ Information about the Workspace associated with the Run can be found by inspecti
 hostname=$(cat /env/TF_VAR_ATLAS_ADDRESS)
 workspace_name=$(cat /env/TF_VAR_TFC_WORKSPACE_NAME)
 run_id=$(cat /env/TF_VAR_TFC_RUN_ID)
+# full list is in the Terraform Execution step detailed below
 ```
 
-<details><summary>Full List of Environment Variables</summary>
+Alternatively, some information about the Run can be found by parsing the TFE generated file in the `/terraform/zzz_backend_override.tf.json` directory.
+
+```sh
+hostname=$(cat /terraform/zzz_backend_override.tf.json | jq -r '.terraform[0].backend[0].remote.hostname')
+organization_name=$(cat /terraform/zzz_backend_override.tf.json | jq -r '.terraform[0].backend[0].remote.organization')
+workspace_name=$(cat /terraform/zzz_backend_override.tf.json | jq -r '.terraform[0].backend[0].remote.workspaces.name')
+```
+
+```json
+{
+  "terraform": [
+    {
+      "backend": [
+        {
+          "remote": {
+            "hostname": "firefly.tfe.rocks",
+            "organization": "someotherorg",
+            "workspaces": {
+              "name": "debug"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+If you wish to stop the Run, exit with a non-zero status and the run will fail.
+
+### Terraform Execution
+
+Details:
+
+- Working Directory: `/terraform`
+- Run as user: `root`
+
+<details><summary>Environment Variables</summary>
 <p>
 
 - ATLAS_ADDRESS
@@ -107,85 +145,6 @@ run_id=$(cat /env/TF_VAR_TFC_RUN_ID)
 - TF_VAR_TFE_RUN_ID
 - TF_VAR_TF_ATLAS_DIR
 - TF_X_SHADOW
-</p>
-</details>
-
-Alternatively, some information about the Run can be found by parsing the TFE generated file in the `/terraform/zzz_backend_override.tf.json` directory.
-
-```sh
-hostname=$(cat /terraform/zzz_backend_override.tf.json | jq -r '.terraform[0].backend[0].remote.hostname')
-organization_name=$(cat /terraform/zzz_backend_override.tf.json | jq -r '.terraform[0].backend[0].remote.organization')
-workspace_name=$(cat /terraform/zzz_backend_override.tf.json | jq -r '.terraform[0].backend[0].remote.workspaces.name')
-```
-
-```json
-{
-  "terraform": [
-    {
-      "backend": [
-        {
-          "remote": {
-            "hostname": "firefly.tfe.rocks",
-            "organization": "someotherorg",
-            "workspaces": {
-              "name": "debug"
-            }
-          }
-        }
-      ]
-    }
-  ]
-}
-```
-
-If you wish to stop the Run, exit with a non-zero status and the run will fail.
-
-### Terraform Execution
-
-Details:
-
-- Working Directory: `/terraform`
-- Run as user: `root`
-
-<details><summary>Environment Variables</summary>
-<p>
-
-- ATLAS_RUN_ID=run-00aabbccddee
-- TF_VAR_ATLAS_CONFIGURATION_SLUG=orgName/wsName
-- TFC_WORKSPACE_NAME=wsName
-- HOSTNAME=00aabbccddee
-- TF_INPUT=0
-- ATLAS_WORKSPACE_NAME=wsName
-- HOME=/root
-- OLDPWD=/
-- TF_X_SHADOW=0
-- TF_TEMP_LOG_PATH=/tmp/terraform-log00aabbccddee
-- TF_REGISTRY_DISCOVERY_RETRY=2
-- TF_VAR_ATLAS_CONFIGURATION_NAME=wsName
-- TF_VAR_ATLAS_WORKSPACE_SLUG=orgName/wsName
-- ATLAS_CONFIGURATION_SLUG=orgName/wsName
-- TF_VAR_TFC_WORKSPACE_SLUG=orgName/wsName
-- PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-- ATLAS_TOKEN=00aabbccddee.atlasv1.00aabbccddee
-- TF_VAR_ATLAS_ADDRESS=https://tfe.company.com
-- TF_APPEND_USER_AGENT=TFE/v202104-1
-- TF_VAR_ATLAS_RUN_ID=run-00aabbccddee
-- TF_PANICWRAP_STDERR=false:78
-- TFC_WORKSPACE_SLUG=orgName/wsName
-- TF_VAR_TFC_RUN_ID=run-00aabbccddee
-- TF_VAR_ATLAS_WORKSPACE_NAME=wsName
-- ATLAS_CONFIGURATION_NAME=wsName
-- TF_VAR_TFE_RUN_ID=run-00aabbccddee
-- ATLAS_WORKSPACE_SLUG=orgName/wsName
-- CHECKPOINT_DISABLE=1
-- TERRAFORM_CONFIG=/tmp/cli.tfrc
-- TF_VAR_TFC_WORKSPACE_NAME=wsName
-- PWD=/terraform
-- TF_IN_AUTOMATION=1
-- TFC_RUN_ID=run-00aabbccddee
-- ATLAS_ADDRESS=https://tfe.company.com
-- TFE_RUN_ID=run-00aabbccddee
-- TF_FORCE_LOCAL_BACKEND=1
 </p>
 </details>
 
