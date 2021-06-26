@@ -13,11 +13,28 @@ One potential solution here is to have an out of band process that writes Terraf
 
 ## Proposed Solution
 
+Leverage the Initialize Script as part of the Alternative Worker Image to inject [Environment Variables](https://www.terraform.io/docs/cli/config/environment-variables.html#tf_var_name) that will be picked up during the Terraform Execution Phase.
+
+> Note: Environment Variables do NOT persist between Plan and Apply phases, so they will need to be set twice!
+
+Set any Terraform Variable value by creating a file in the `/env/` folder with a file name that is in the format "TF_VAR_{insert variable name}".
+
+```sh
+echo "This was set via the Initialize Script" > /env/TF_VAR_init_variable
+```
+
+> Note: Case sensitivity matters
+
+The main advantages of this approach:
+
+* If the workspace doesn't need the value and doesn't have the Terraform Variable declared, no warning will be shown (much like in Alternative Solution below).
+* Can be used for any Environment Variable (such as provider secrets)
+
+## Alternative Solution
+
 Leverage the Initialize Script as part of the Alternative Worker Image to inject a Terraform Variables (*.tfvars) file before Terraform executes a plan.
 
-> Note: setting TF_VAR_* type environment variables would be great here, however that is not currently possible with an Initialize Script.
-
-In this simple example the values are hardcoded into the script, however these could easily be pulled from external sources.
+A simple example can be found in [init_custom_worker-autotfvars.sh](./init_custom_worker-autotfvars.sh) and the values are hardcoded into the script, however these could easily be pulled from external sources.
 
 ```sh
 cat >> /terraform/zzz_global.auto.tfvars << EOF
@@ -69,9 +86,12 @@ The Terraform will run, however a warning will be displayed:
 │ The root module does not declare a variable named "init_variable" but a
 │ value was found in file "zzz_global.auto.tfvars". If you meant to use this
 │ value, add a "variable" block to the configuration.
+│ 
+│ To silence these warnings, use TF_VAR_... environment variables to provide
+│ certain "global" settings to all configurations in your organization. To
+│ reduce the verbosity of these warnings, use the -compact-warnings option.
 ```
-
-One solution to this could be to do a parse of the `/terraform` directory for a variable declaration block in a *.tf files and dynamically include/exclude that assignment.
+This is an area Proposed Solution solves for, but another solution to this could be to do a parse of the `/terraform` directory for a variable declaration block in a *.tf files and dynamically include/exclude that assignment.
 
 ### Variable Secrets
 

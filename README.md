@@ -22,6 +22,11 @@ Each Phase has three distinct steps; Initialize Script, Terraform Execution, and
 
 > Note: the Initialize and Finalize Script will run TWICE on a successful Workspace Run that includes an apply.
 
+* Regardless of which Phase you are in, the steps will have the `/terraform` folder with the code for the Workspace Run.
+* Any manipulation of the `/terraform` folder in the Plan Phase will persist into the Apply Phase.
+* During the Terraform Execution Step, Environment Variables are loaded based on any file that is in the `/env/` directory.
+* The `/env/` directory does **not** persist between the Plan and Apply phases.
+
 ### Initialize Script
 
 Details:
@@ -44,14 +49,68 @@ This script gives you the ability to perform run time operations just *before* t
 
 This file **must** be an executable shell script at `/usr/local/bin/init_custom_worker.sh`.
 
-Known Limitations:
-- Environment variables that are loaded in the Terraform Execution Phase are not available in this script.
-- Unable to set Environment Variables in the Terraform Execution Phase.
-- Unable to retrieve the Workspace Run Id.
+The `/terraform` directory is pre-populated with the Terraform Code that will be executed as part of this Workspace Run.
 
-During this Phase the `/terraform` directory is populated with the Terraform Code that will be executed as part of this Workspace Run.
+Information about the Workspace associated with the Run can be found by inspecting the `/env/` folder:
 
-Information about the Workspace associated with the Run can be found by parsing the TFE generated file in the `/terraform` directory.
+```sh
+hostname=$(cat /env/TF_VAR_ATLAS_ADDRESS)
+workspace_name=$(cat /env/TF_VAR_TFC_WORKSPACE_NAME)
+run_id=$(cat /env/TF_VAR_TFC_RUN_ID)
+```
+
+<details><summary>Full List of Environment Variables</summary>
+<p>
+
+- ATLAS_ADDRESS
+- ATLAS_CONFIGURATION_NAME
+- ATLAS_CONFIGURATION_SLUG
+- ATLAS_CONFIGURATION_VERSION
+- ATLAS_CONFIGURATION_VERSION_GITHUB_BRANCH
+- ATLAS_CONFIGURATION_VERSION_GITHUB_COMMIT_SHA
+- ATLAS_CONFIGURATION_VERSION_GITHUB_TAG
+- ATLAS_RUN_ID
+- ATLAS_TOKEN
+- ATLAS_WORKSPACE_NAME
+- ATLAS_WORKSPACE_SLUG
+- CHECKPOINT_DISABLE
+- TERRAFORM_CONFIG
+- TFC_CONFIGURATION_VERSION_GIT_BRANCH
+- TFC_CONFIGURATION_VERSION_GIT_COMMIT_SHA
+- TFC_CONFIGURATION_VERSION_GIT_TAG
+- TFC_RUN_ID
+- TFC_WORKSPACE_NAME
+- TFC_WORKSPACE_SLUG
+- TFE_RUN_ID
+- TF_APPEND_USER_AGENT
+- TF_ATLAS_DIR
+- TF_FORCE_LOCAL_BACKEND
+- TF_INPUT
+- TF_IN_AUTOMATION
+- TF_REGISTRY_DISCOVERY_RETRY
+- TF_VAR_ATLAS_ADDRESS
+- TF_VAR_ATLAS_CONFIGURATION_NAME
+- TF_VAR_ATLAS_CONFIGURATION_SLUG
+- TF_VAR_ATLAS_CONFIGURATION_VERSION
+- TF_VAR_ATLAS_CONFIGURATION_VERSION_GITHUB_BRANCH
+- TF_VAR_ATLAS_CONFIGURATION_VERSION_GITHUB_COMMIT_SHA
+- TF_VAR_ATLAS_CONFIGURATION_VERSION_GITHUB_TAG
+- TF_VAR_ATLAS_RUN_ID
+- TF_VAR_ATLAS_WORKSPACE_NAME
+- TF_VAR_ATLAS_WORKSPACE_SLUG
+- TF_VAR_TFC_CONFIGURATION_VERSION_GIT_BRANCH
+- TF_VAR_TFC_CONFIGURATION_VERSION_GIT_COMMIT_SHA
+- TF_VAR_TFC_CONFIGURATION_VERSION_GIT_TAG
+- TF_VAR_TFC_RUN_ID
+- TF_VAR_TFC_WORKSPACE_NAME
+- TF_VAR_TFC_WORKSPACE_SLUG
+- TF_VAR_TFE_RUN_ID
+- TF_VAR_TF_ATLAS_DIR
+- TF_X_SHADOW
+</p>
+</details>
+
+Alternatively, some information about the Run can be found by parsing the TFE generated file in the `/terraform/zzz_backend_override.tf.json` directory.
 
 ```sh
 hostname=$(cat /terraform/zzz_backend_override.tf.json | jq -r '.terraform[0].backend[0].remote.hostname')
