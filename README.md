@@ -151,7 +151,7 @@ Details:
 Contains the Terraform Code.
 
 `/terraform/terraform.tfvars` file from the WS variables.
-`zzz_ba` file with workspace backend information.
+`zzz_backend_override.tf.json` file with workspace backend information.
 
 ### Finalize Script
 
