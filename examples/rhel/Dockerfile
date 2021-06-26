@@ -20,6 +20,3 @@ RUN rpm -ivh /root/rpmbuild/RPMS/x86_64/daemontools-0.76-1.el7.x86_64.rpm
 
 # Install latest AWS CLI
 RUN ["/bin/sh", "-c", "curl -k 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip' -o awscliv2.zip && unzip awscliv2.zip && ./aws/install"]
-
-# Install version of Kubectl
-RUN ["/bin/sh", "-c", "curl -LO 'https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl' && chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl"]
