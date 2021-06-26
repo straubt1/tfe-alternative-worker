@@ -1,10 +1,12 @@
 # Terraform Enterprise Alternative Worker
 
-When Terraform Enterprise executes a Workspace Run, an ephemeral docker container is created for each phase "plan" and "apply. By default TFE ships with a vanilla container that works well for most uses, but there are some cases where it is necessary to customize this image.
+By default TFE ships with a vanilla container that works well for most uses, but there are some cases where it is necessary to customize this image.
 
 This repository outlines how the Alternative Worker image is used during a Workspace Run and contains several examples.
 
 ## Workspace Run Flow
+
+When Terraform Enterprise executes a Workspace Run, an ephemeral docker container is created for each phase "plan" and "apply, these containers are short lived and are isolated. 
 
 ![](images/workspace-run-flow.png)
 
@@ -17,6 +19,8 @@ There are two "Phases" to a run:
   * Will be skipped if a speculative plan was queued, there was a failure, a policy check failed, Workspace Run was cancelled or discarded.
 
 Each Phase has three distinct steps; Initialize Script, Terraform Execution, and Finalize Script.
+
+> Note: the Initialize and Finalize Script will run TWICE on a successful Workspace Run that includes an apply.
 
 ### Initialize Script
 
