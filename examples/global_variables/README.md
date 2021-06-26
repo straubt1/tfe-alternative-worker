@@ -1,6 +1,6 @@
 # Global Variables
 
-**Problem:** I wish to set Terraform Variables to values to all Workspaces automatically.
+**Problem:** I wish to set Terraform Variables for all Workspaces automatically.
 
 ## Initial Thought
 
@@ -35,9 +35,9 @@ There are several ways we could inject these values based on the desired result.
 
 **Option 1 - .auto.tfvars**
 
-Write these values to a file such as `zzz_global.auto.tfvars` so that they are [auto loaded](https://www.terraform.io/docs/language/values/variables.html#variable-definitions-tfvars-files) based on the `.auto.tfvars` extension. This could also be built with `.auto.tfvars.json` file if a more programmatic approach was desired.
+Write these values to a file such as `zzz_global.auto.tfvars` so that they are [auto loaded](https://www.terraform.io/docs/language/values/variables.html#variable-definitions-tfvars-files) based on the `.auto.tfvars` file extension. This could also be built with `.auto.tfvars.json` file if a more programmatic approach was desired.
 
-This approach (which is what the example in this directory uses) keeps a clear isolation from a directory structure.
+This approach (which is what the example in this directory uses) maintains a clear distinction of the files we are manipulating during the Initialize Script.
 
 **Option 2 - terraform.tfvars**
 

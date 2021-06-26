@@ -4,7 +4,7 @@ When Terraform Enterprise executes a Workspace Run, an ephemeral docker containe
 
 This repository outlines how the Alternative Worker image is used during a Workspace Run and contains several examples.
 
-## Workspace Run
+## Workspace Run Flow
 
 ![](images/workspace-run-flow.png)
 
@@ -182,6 +182,10 @@ If you want to see what the default TFE worker looks like, you can run it from t
 # Run an ephemeral container and bash into it
 docker run --rm -it hashicorp/build-worker:now /bin/bash
 ```
+
+---
+
+Adding a `sleep 60` to the Initialize Script gives you an opportunity to start a Workspace Run and then `docker exec` into the running container to debug/develop that script.
 
 ---
 
