@@ -27,8 +27,8 @@ echo "This was set via the Initialize Script" > /env/TF_VAR_init_variable
 
 The main advantages of this approach:
 
-* If the workspace doesn't need the value and doesn't have the Terraform Variable declared, no warning will be shown (much like in Alternative Solution below).
-* Can be used for any Environment Variable (such as provider secrets)
+* If the workspace doesn't need the value and doesn't have the Terraform Variable declared, no warning will be shown (like in Alternative Solution below).
+* Can be used for any Environment Variable (such as provider secrets).
 
 ## Alternative Solution
 
@@ -66,9 +66,8 @@ We could append to this file instead of creating the `zzz_global.auto.tfvars`, w
   - Terraform would error with 'The argument "init_variable" was already set..."'
 - If a value was assigned via an `.auto.tfvars` file, this value would override with no message to the end user
 
-## Challenges
 
-This approach of modifying/adding Terraform files just before Terraform executes does have some issues.
+Option 1 and 2 are modifying/adding Terraform files just before Terraform executes, this doe have some issues.
 
 ### Variable Declaration
 

@@ -49,6 +49,8 @@ This script gives you the ability to perform run time operations just *before* t
 
 This file **must** be an executable shell script at `/usr/local/bin/init_custom_worker.sh`.
 
+Any output printed during this step is **not** outputted (unless a non-zero exit code is returned).
+
 The `/terraform` directory is pre-populated with the Terraform Code that will be executed as part of this Workspace Run.
 
 Information about the Workspace associated with the Run can be found by inspecting the `/env/` folder:
@@ -89,6 +91,12 @@ workspace_name=$(cat /terraform/zzz_backend_override.tf.json | jq -r '.terraform
 ```
 
 If you wish to stop the Run, exit with a non-zero status and the run will fail.
+When a non-zero exit status is found, any output from the script will be printed:
+
+```sh
+Setup failed: custom script /usr/local/bin/init_custom_worker.sh exited with 1: output:
+Test Failure from Initialize Script
+```
 
 ### Terraform Execution
 
