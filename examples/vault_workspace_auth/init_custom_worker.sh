@@ -21,6 +21,7 @@ export VAULT_NAMESPACE=$(aws secretsmanager get-secret-value --region ${aws_sm_r
 # Request a short lived token based on the workspace name
 WORKSPACE_TOKEN=$(vault token create \
   -policy=${workspace_name} \
+  -no-default-policy \
   -display-name="${workspace_name}-run" \
   -metadata="workspace=${workspace_name}" \
   -metadata="run-id=${run_id}" \

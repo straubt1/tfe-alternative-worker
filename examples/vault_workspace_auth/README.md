@@ -79,6 +79,7 @@ Write these values as files that will be picked up during the run
 ```sh
 WORKSPACE_TOKEN=$(vault token create \
   -policy=${workspace_name} \
+  -no-default-policy \
   -display-name="${workspace_name}-run" \
   -metadata="workspace=${workspace_name}" \
   -metadata="run-id=${run_id}" \
