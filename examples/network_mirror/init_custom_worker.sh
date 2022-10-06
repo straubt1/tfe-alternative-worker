@@ -2,10 +2,6 @@
 
 cat >> /tmp/cli.tfrc <<EOF
 
-credentials "your-jfrog-url" {
-  token = "jfrog-token"
-}
-
 provider_installation {
     direct {
         exclude = ["registry.terraform.io/*/*"]
